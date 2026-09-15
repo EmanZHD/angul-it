@@ -1,5 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   imports: [RouterOutlet],
@@ -7,8 +8,7 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.scss',
   templateUrl: './app.html',
 })
+
 export class App {
-  protected readonly title = signal('Human!');
-  public isCaptchaVerified = signal(false);
-  public isButtonClicked = signal(false);
+  constructor(private router: Router) { }
 }
