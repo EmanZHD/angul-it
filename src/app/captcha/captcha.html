@@ -1,16 +1,42 @@
 <main class="main">
-    <div class="content">
-        <div class="captcha-title">Select all squares with cars</div>
-    </div>
-    <form (ngSubmit)="submitCaptcha()">
-        <div class="image-grid">
-            @for (image of images; track $index) {
-            <label class="image-card">
-                <input type="checkbox" name="image-{{ $index }}" />
-                <img src="{{ image.src }}" alt="Image {{ $index + 1 }}" />
-            </label>
-            }
+    <div class="captchacontainer">
+        <div class="captchahead">
+            <button class="back" (click)="goBack()">{{backMessage}}</button>
+            <h3>Stages {{captchaState.currentStage}} / 3 </h3>
         </div>
-        <button type="submit" class="submit-btn">Verify</button>
-    </form>
+        @if (captchaState.currentStage === 1) {
+        <div class="content-stage1">
+            <div class="captcha-title">
+                <p class="captcha-instructions">Select all squares with</p>
+                <h3 class="captcha-type">{{captchaState.captchaType.toLocaleUpperCase()}}</h3>
+            </div>
+            <form (ngSubmit)="submitCaptcha()">
+                <div class="image-grid">
+                    @for (image of captchaImages; track $index) {
+                    <label class="image-card" [class.selected]="selectedImages.includes($index)">
+                        <input type="checkbox" name="image-{{ $index }}" (change)="toggleImage($index)" />
+                        <img src="{{ image.src }}" alt="Image {{ $index + 1 }}" />
+                    </label>
+                    }
+                </div>
+                <button type="submit" class="submit-btn">Verify</button>
+            </form>
+        </div>
+        }
+
+        @if (captchaState.currentStage === 2) {
+        <div class="content-stage2">
+            <div class="captcha-title">
+                <p class="captcha-instructions">Solve the math problem below to continue.</p>
+            </div>
+            <form (ngSubmit)="submitCaptcha()">
+                <div class="math-problem">
+                    <p class="captcha-math">{{ mathProblem }}</p>
+                    <input class="captcha-math-input" type="number" [(ngModel)]="captchaState.answers.stage2" name="stage2Answer" required />
+                </div>
+                <button type="submit" class="submit-btn">Verify</button>
+            </form>
+        </div>
+        }
+    </div>
 </main>

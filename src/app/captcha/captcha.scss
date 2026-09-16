@@ -1,0 +1,132 @@
+    @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+
+    :host {
+        --bright-blue: #50a2ff;
+    }
+
+    main {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 1rem;
+        box-sizing: inherit;
+        position: relative;
+    }
+
+    .captcha-container {
+        width: 100%;
+        max-width: 350px;
+    }
+
+    .content-stage1,
+    content-stage2 {
+        border: 1px solid #ccc;
+        padding: 1rem;
+        //    display: inline-flex;
+        //    justify-content: center;
+        //    width: 100%;
+        //    max-width: 700px;
+        //    margin-bottom: 3rem;
+    }
+
+    form {
+        margin-top: .4rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .image-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 100px);
+        gap: 8px;
+    }
+
+    .image-card {
+        position: relative;
+        cursor: pointer;
+    }
+
+    .image-card input {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        z-index: 2;
+    }
+
+    .image-card img {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        display: block;
+    }
+
+    .captcha-title {
+        //    padding-left: 1rem;
+        padding: .1rem 2rem;
+        background-color: var(--bright-blue);
+    }
+
+    .captcha-instructions,
+    .captcha-type {
+        color: #f0f0f0;
+    }
+
+    .submit-btn {
+        padding: .6rem 1rem;
+        background: var(--bright-blue);
+        border: none;
+        border-radius: .1rem;
+        font-size: 1rem;
+        color: #fff;
+        text-transform: uppercase;
+    }
+
+    input[type="checkbox"] {
+        display: none;
+    }
+
+    .image-card.selected {
+        outline: 2px solid var(--bright-blue);
+    }
+
+    .image-card.selected img {
+        filter: grayscale(100%);
+        opacity: 0.6;
+    }
+
+    button.back {
+        border: none;
+        background: none;
+    }
+
+    .captcha-math {
+        font-family: 'Permanent Marker', cursive;
+        font-size: 3rem;
+        display: flex;
+        justify-content: center;
+        background: gainsboro;
+        padding: 2rem;
+    }
+
+    .captcha-math-input {
+        border: 1px solid #ccc;
+        padding: .5rem;
+        font-size: 1.5rem;
+    }
+
+    .captcha-math-input {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: .5rem;
+        font-size: 1.5rem;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+
+    }
+
+    .captcha-math-input:focus {
+        border-color: #1a73e8;
+        box-shadow: 0 0 0 1px #1a73e8;
+    }
