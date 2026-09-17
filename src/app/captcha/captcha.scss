@@ -19,7 +19,8 @@
     }
 
     .content-stage1,
-    content-stage2 {
+    .content-stage2,
+    .content-stage3 {
         border: 1px solid #ccc;
         padding: 1rem;
         //    display: inline-flex;
@@ -28,6 +29,8 @@
         //    max-width: 700px;
         //    margin-bottom: 3rem;
     }
+
+
 
     form {
         margin-top: .4rem;
@@ -110,13 +113,15 @@
         padding: 2rem;
     }
 
-    .captcha-math-input {
+    .captcha-math-input,
+    .captcha-text-input {
         border: 1px solid #ccc;
         padding: .5rem;
         font-size: 1.5rem;
     }
 
-    .captcha-math-input {
+    .captcha-math-input,
+    .captcha-text-inpu {
         border: 1px solid #ccc;
         border-radius: 4px;
         padding: .5rem;
@@ -129,4 +134,50 @@
     .captcha-math-input:focus {
         border-color: #1a73e8;
         box-shadow: 0 0 0 1px #1a73e8;
+    }
+
+    .text-chars {
+        font-size: 3rem;
+        // display: flex;
+        justify-content: center;
+        background: gainsboro;
+        // padding: 2rem;
+    }
+
+    .text-problem p {
+        display: inline-block;
+    }
+
+    .text-problem p:nth-child(2) {
+        transform: rotate(28deg);
+    }
+
+    .text-problem p:nth-child(3) {
+        transform: rotate(-9deg);
+    }
+
+    .text-problem p:nth-child(1) {
+        transform: rotate(-50deg);
+    }
+
+    .text-problem p:nth-child(4) {
+        transform: rotate(40deg);
+    }
+
+    .text-problem p:nth-child(5) {
+        transform: rotate(-9deg);
+    }
+
+    .text-problem p:nth-child(6) {
+        transform: rotate(-50deg);
+    }
+
+    .text-problem p:nth-child(7) {
+        transform: rotate(40deg);
+    }
+
+    .text-chars {
+        display: flex;
+        justify-content: center;
+        margin: 1rem 0rem;
     }

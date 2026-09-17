@@ -27,13 +27,17 @@ export class CaptchaStateService {
 
     private state: CaptchaState = {
         currentStage: 1,
+        first: 0,
+        second: 0,
+        // imageType: 'palm',
+        captchaText: '',
         answers: {
             stage1: [],
             stage2: '',
             stage3: ''
         },
         selectedImages: [],
-        captchaType: 'palm',
+        captchaType: '',
         completed: false
     };
 
@@ -65,13 +69,17 @@ export class CaptchaStateService {
     resetState(): void {
         this.state = {
             currentStage: 1,
+            first: 0,
+            second: 0,
+            // imageType: 'palm',
+            captchaText: '',
             answers: {
                 stage1: [],
                 stage2: '',
                 stage3: ''
             },
             selectedImages: [],
-            captchaType: 'palm',
+            captchaType: '',
             completed: false
         };
         localStorage.removeItem('captchaState');
@@ -96,4 +104,14 @@ export class CaptchaStateService {
     // setState(newState: Partial<CaptchaState>): void {
     //     this.state = { ...this.state, ...newState };
     // }
+
+    generateCaptchaText(): string {
+        if (this.state.answers.stage3?.length == 0) {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+            this.state.captchaText = Array.from({ length: 8 }, () =>
+                chars[Math.floor(Math.random() * chars.length)]
+            ).join('');
+        }
+        return this.state.captchaText;
+    }
 }
