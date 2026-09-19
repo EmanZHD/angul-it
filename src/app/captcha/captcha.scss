@@ -84,6 +84,7 @@
         font-size: 1rem;
         color: #fff;
         text-transform: uppercase;
+        border-radius: .2rem;
     }
 
     input[type="checkbox"] {
@@ -99,7 +100,15 @@
         opacity: 0.6;
     }
 
-    button.back {
+    .left,
+    .right {
+        display: flex;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+    button.back,
+    button.next {
         border: none;
         background: none;
     }
@@ -180,4 +189,78 @@
         display: flex;
         justify-content: center;
         margin: 1rem 0rem;
+    }
+
+    .captcha-dialog {
+        border: 2px solid #50a2ff;
+        border-radius: 8px;
+    }
+
+    .captchahead {
+        display: flex;
+        justify-content: space-between;
+        padding: 1rem 0rem 2rem;
+    }
+
+
+    .timer {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-variant-numeric: tabular-nums;
+        /* prevents digits from shifting */
+        font-weight: 600;
+        font-size: 1.5rem;
+        color: #2b2b2b;
+        background: #f5f6f8;
+        padding: 6px 12px;
+        border-radius: 999px;
+    }
+
+    .timer-icon {
+        font-size: 14px;
+        opacity: 0.7;
+    }
+
+
+
+    button.back,
+    button.next {
+        display: inline-flex;
+        /* ✅ flex layout */
+        align-items: center;
+        /* ✅ vertical center */
+        justify-content: center;
+        /* ✅ horizontal center */
+        gap: 6px;
+        /* ✅ space between icon and text */
+        border: none;
+        background: none;
+        padding: 6px 10px;
+        /* optional breathing room */
+        cursor: pointer;
+        font-size: 0.9rem;
+        /* match your UI */
+        line-height: 1;
+        /* ✅ prevents text from being taller */
+        color: #2b2b2b;
+    }
+
+    /* ensure mat-icon doesn't add extra line-height */
+    button.back mat-icon,
+    button.next mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+        line-height: 18px;
+        /* ✅ critical for mat-icon */
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+
+    .captchacontainer .stages {
+        display: flex;
+        justify-content: center;
     }

@@ -1,16 +1,32 @@
 export interface CaptchaState {
-    currentStage: number;
-    first: number;
-    second: number;
+    crono: {
+        interval: number | null,
+        time: string,
+        isStarted: boolean
+    },
+    stages: {
+        stage1: {
+            expected: number[],
+            selectedImages: number[],
+            imageType: string,
+            resolved: boolean
+        },
+        stage2: {
+            expected: number,
+            data: {
+                first: number,
+                second: number
+            },
+            response: number,
+            resolved: boolean
+        },
+        satge3: {
+            expected: string,
+            response: string,
+            resolved: boolean
+        }
+    },
+    currentStage: number,
     // imageType: string;
-    captchaText: string;
-    answers: {
-        stage1: number[];
-        stage2: string;
-        stage3: string;
-    };
-
-    selectedImages: number[];
-    captchaType: string;
-    completed: boolean;
+    completed: boolean
 }

@@ -1,6 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Router } from '@angular/router';
+import { CaptchaStateService } from './core/service/captcha-state.service';
 
 @Component({
   imports: [RouterOutlet],
@@ -9,6 +10,10 @@ import { Router } from '@angular/router';
   templateUrl: './app.html',
 })
 
-export class App {
-  constructor(private router: Router) { }
+export class App implements OnInit {
+  constructor(private router: Router, private captchaStateService: CaptchaStateService) {}
+
+  ngOnInit(): void {
+    this.captchaStateService.resetState();
+  }
 }

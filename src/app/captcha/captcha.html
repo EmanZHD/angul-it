@@ -1,16 +1,31 @@
 <main class="main">
     <div class="captchacontainer">
+        @if (!captchaState.completed) {
+        <h3 class="stages">Stages {{captchaState.currentStage}} / 3 </h3>
+        }
         <div class="captchahead">
-            <button class="back" (click)="goBack()">{{backMessage}}</button>
-            @if (!captchaState.completed) {
-            <h3>Stages {{captchaState.currentStage}} / 3 </h3>
-            }
+            <div class="left">
+
+                <button class="back" (click)="goBack()">
+                    <mat-icon>arrow_back</mat-icon>
+                    {{backMessage}}
+                </button>
+            </div>
+            <div class="center" class="timer">{{formattedTime}}</div>
+            <div class="right">
+                @if (NextStage()) {
+                <button class="next" (click)="NextStage()">Next Stage
+                    <mat-icon>arrow_forward</mat-icon>
+
+                </button>
+                }
+            </div>
         </div>
         @if (captchaState.currentStage === 1 && !captchaState.completed) {
         <div class="content-stage1">
             <div class="captcha-title">
                 <p class="captcha-instructions">Select all squares with</p>
-                <h3 class="captcha-type">{{captchaState.captchaType.toLocaleUpperCase()}}</h3>
+                <h3 class="captcha-type">{{captchaState.stages.stage1.imageType.toLocaleUpperCase()}}</h3>
             </div>
             <form (ngSubmit)="submitStage1()">
                 <div class="image-grid">
@@ -21,7 +36,8 @@
                     </label>
                     }
                 </div>
-                <button type="submit" class="submit-btn">Verify</button>
+                <!-- <button type="submit" class="submit-btn">Verify</button> -->
+                <button mat-raised-button class="submit-btn">Verify</button>
             </form>
         </div>
         }
@@ -34,7 +50,7 @@
             <form (ngSubmit)="submitStage2()">
                 <div class="math-problem">
                     <p class="captcha-math">{{ mathProblem }}</p>
-                    <input class="captcha-math-input" type="number" [(ngModel)]="captchaState.answers.stage2"
+                    <input class="captcha-math-input" type="number" [(ngModel)]="captchaState.stages.stage2.response"
                         name="stage2Answer" required />
                 </div>
                 <button type="submit" class="submit-btn">Verify</button>
@@ -54,16 +70,11 @@
                         <p>{{ char }}</p>
                         }
                     </div>
-                    <input class="captcha-text-input" type="text" [(ngModel)]="captchaState.answers.stage3"
+                    <input class="captcha-text-input" type="text" [(ngModel)]="captchaState.stages.satge3.response"
                         name="stage2Answer" required />
                 </div>
                 <button type="submit" class="submit-btn">Verify</button>
             </form>
-        </div>
-        }
-        @if (captchaState.completed){
-        <div class="content-stage3">
-            <p class="captcha-math">Congrats</p>
         </div>
         }
     </div>

@@ -1,24 +1,36 @@
-import { Component } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { CaptchaStateService } from "../core/service/captcha-state.service";
 import { CaptchaState } from "../models/captcha-state.interface";
 import { FormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
 
+import { MatButtonModule } from "@angular/material/button";
+import { MatInputModule } from "@angular/material/input";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatCardModule } from "@angular/material/card";
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from "@angular/material/icon";
+import { Popup } from "../popup/popup";
 @Component({
     selector: "app-captcha",
     templateUrl: "./captcha.html",
     styleUrl: "./captcha.scss",
-    imports: [FormsModule]
+    imports: [FormsModule,
+        MatButtonModule,
+        MatInputModule,
+        MatFormFieldModule,
+        MatCheckboxModule,
+        MatCardModule,
+        MatDialogModule,
+        MatIconModule]
 })
-export class CaptchaComponent {
+export class CaptchaComponent implements OnInit {
 
-    private readonly correctPositions: Record<string, number[]> = {
-        palm: [1, 4, 6, 8],
-        hydrant: [0, 5, 7],
-        stair: [2, 3]
-    };
+
 
     captchaState: CaptchaState;
+
     captchaImages: { src: string; alt: string }[];
     mathProblem: string = '';
     captchaType: string;
@@ -27,109 +39,148 @@ export class CaptchaComponent {
     verificationText: string = '';
     public selected = false;
     selectedImages: number[] = [];
+    formattedTime: string = '00:00';
+    private clockInterval: any;
 
-
-    constructor(private captchaStateService: CaptchaStateService, private router: Router) {
+    constructor(private captchaStateService: CaptchaStateService,
+        private router: Router,
+        private dialog: MatDialog, private cdr: ChangeDetectorRef) {
         this.captchaState = this.captchaStateService.getState();
+
         this.captchaImages = this.captchaStateService.getImages();
-        this.selectedImages = this.captchaState.answers.stage1;
+
+        //firstStage
+        this.selectedImages = this.captchaState.stages.stage1.expected;
+        this.captchaState.stages.stage1.expected = this.captchaStateService.correctPositions[this.captchaState.stages.stage1.imageType]
         this.captchaType = this.getCaptchType();
         this.verificationText = this.captchaStateService.generateCaptchaText();
         this.mathProblem = this.handleMathCaptcha();
+        this.formattedTime = this.captchaState.crono.time;
+    }
+
+
+    ngOnInit(): void {
+        this.captchaStateService.startCrono();
+
+        this.clockInterval = setInterval(() => {
+            this.formattedTime = this.captchaState.crono.time;
+            this.cdr.detectChanges();
+        }, 1000);
     }
 
     submitStage3() {
-        const inputText = this.captchaState.answers.stage3.trim();
+        const inputText = this.captchaState.stages.satge3.response.trim();
 
         if (inputText.length == 0) {
-            alert(`ENter to continue.`);
+            this.openErrorPOpup("ENter to continue.");
             return;
         }
         if (this.verificationText !== inputText) {
-            alert(`Not correct.`);
+            this.openErrorPOpup("NOt correct");
             return;
         } else {
-            this.captchaState.completed = true;
-            this.captchaStateService.resetState();
-
+            const state = this.captchaStateService.getState();
+            state.completed = true;
+            this.captchaStateService.stopCrono();
+            this.captchaStateService.saveState(state);
+            this.router.navigate(["/result"]);
         }
     }
 
+    openErrorPOpup(error: string) {
+        const dialogREf = this.dialog.open(Popup, {
+            panelClass: 'captcha-dialog'
+        });
+
+        dialogREf.componentInstance.errMessage = error;
+    }
 
     getCaptchType(): string {
-        if (this.captchaState.answers.stage1.length == 0) {
+        if (this.captchaState.stages.stage1.selectedImages.length == 0) {
             if (this.index === 0) {
                 this.captchaTypes.sort(() => Math.random() - 0.5);
             }
-            this.captchaState.captchaType = this.captchaTypes[this.index++]
-            return this.captchaState.captchaType;
+            this.captchaState.stages.stage1.imageType = this.captchaTypes[this.index++]
+            return this.captchaState.stages.stage1.imageType;
         }
-        return this.captchaState.captchaType;
+        return this.captchaState.stages.stage1.imageType;
     }
 
-    isCaptchaCorrect(selected: number[]): boolean {
-        const correct = this.correctPositions[this.captchaState.captchaType];
+    // isCaptchaCorrect(selected: number[]): boolean {
+    //     const correct = this.correctPositions[this.captchaState.stages.stage1.imageType];
 
-        return correct.length === selected.length &&
-            correct.every(position => selected.includes(position));
-    }
+    //     return correct.length === selected.length &&
+    //         correct.every(position => selected.includes(position));
+    // }
 
     get backMessage(): string {
         return this.captchaState.currentStage === 1 || this.captchaState.completed
             ? 'Back to Home'
-            : `Back to Stage ${this.captchaState.currentStage - 1}`;
+            : `Previous Stage - ${this.captchaState.currentStage - 1}`;
     }
 
 
     goBack() {
-        console.log("STAGE => ", this.captchaState.currentStage);
+        // console.log("STAGE => ", this.captchaState.currentStage);
 
-        if (this.captchaState.currentStage === 2) {
-            this.captchaState.currentStage = 1;
-            if (!this.captchaState.answers.stage2) {
-                this.captchaState.first = 0;
-                this.captchaState.second = 0;
-            }
-        } else if (this.captchaState.currentStage === 3) {
-            this.captchaState.currentStage = 2;
-        } else {
-            this.router.navigate(['/']);
-            this.captchaStateService.resetState();
-            // this.captchaState.currentStage = 1;
-        }
+        // if (this.captchaState.currentStage === 2) {
+        //     this.captchaState.currentStage = 1;
+        //     if (!this.captchaState.answers.stage2) {
+        //         this.captchaState.first = 0;
+        //         this.captchaState.second = 0;
+        //     }
+        // } else if (this.captchaState.currentStage === 3) {
+        //     this.captchaState.currentStage = 2;
+        // } else {
+        //     this.router.navigate(['/']);
+        //     this.captchaStateService.resetState();            // this.captchaState.currentStage = 1;
+        // }
+    }
+
+    NextStage() {
+        // if (this.captchaState.currentStage == 1) {
+        //     if (!this.isMathCaptchaCorrect()) {
+        //         this.captchaState.currentStage = 2;
+        //         return
+        //     }
+        // }
+        // if (this.captchaState.currentStage == 2) {
+        //     if (this.isCaptchaCorrect(this.selectedImages)) {
+        //         this.captchaState.currentStage = 3;
+        //         return
+        //     }
+        // }
+        return false
     }
 
     submitStage1() {
-        const stage = this.captchaState.currentStage;
-        const selected = this.selectedImages;
+        // this.captchaState.stages.stage1.resolved = false;
 
-        console.log("Submitting Captcha for Stage ->", stage);
-        // console.log("Selected Images ->", selected);
+        // if (this.selectedImages.length === 0) {
+        //     this.captchaState.currentStage = 1;
+        //     this.openErrorPOpup("Please select at least one image before proceeding.");
+        //     return;
+        // }
 
-        if (selected.length === 0) {
-            this.captchaState.currentStage = 1;
-            alert("Please select at least one image before proceeding.");
-            return;
-        }
+        // if (this.selectedImages.length !== this.captchaState.stages.stage1.expected.length &&
+        //     this.captchaState.stages.stage1.expected.every(position => this.selectedImages.includes(position))
+        // ) {
+        //     this.captchaState.currentStage = 1;
+        //     this.openErrorPOpup(`Not correct try to select just ${this.captchaState.stages.stage1.imageType.toLocaleUpperCase()} .`);
+        //     return;
+        // }
 
-        if (!this.isCaptchaCorrect(selected)) {
-            this.captchaState.currentStage = 1;
-            alert(`NOT CORRECT TRY TO SELECT JUST ${this.captchaState.captchaType} .`);
-            return;
-        }
+        // // this.captchaStateService.setAnswers(stage, selected);
+        // this.captchaState.stages.stage1.selectedImages = this.selectedImages;
+        // this.captchaState.stages.stage1.resolved = true;
+        // this.captchaStateService.getState();
+        // this.captchaState.currentStage = 2;
 
-        this.captchaStateService.setAnswers(stage, selected);
-        this.captchaState.currentStage = 2;
-        this.captchaState = this.captchaStateService.getState();
-        if (!this.captchaState.answers.stage2) {
-            console.log("HEEEEEEEEEEEEE-----------");
+        // if (!this.captchaState.stages.stage2.resolved) {
+        //     this.mathProblem = this.handleMathCaptcha();
+        // }
 
-            this.mathProblem = this.handleMathCaptcha();
-        }
-        this.captchaStateService.saveState(this.captchaState);
-
-        console.log(
-            "New STATE ->", this.captchaState);
+        // this.captchaStateService.saveState(this.captchaState);
     }
 
 
@@ -139,46 +190,46 @@ export class CaptchaComponent {
     }
 
     handleMathCaptcha(): string {
-        if (!this.captchaState.answers.stage2) {
-            this.captchaState.first = this.randomInt(1, 10);
-            this.captchaState.second = this.randomInt(1, 10);
-            this.mathProblem = `${this.captchaState.first} + ${this.captchaState.second} = ?`;
+        if (!this.captchaState.stages.stage2.expected) {
+            this.captchaState.stages.stage2.data.first = this.randomInt(1, 10);
+            this.captchaState.stages.stage2.data.second = this.randomInt(1, 10);
+            this.mathProblem = `${this.captchaState.stages.stage2.data.first} + ${this.captchaState.stages.stage2.data.second} = ?`;
+            this.captchaState.stages.stage2.expected = this.captchaState.stages.stage2.data.first + this.captchaState.stages.stage2.data.second;
             return this.mathProblem;
         }
-        console.log("CAPTCHA STAGE 2 --z> ", this.captchaState.answers.stage2?.length);
+        // console.log("CAPTCHA STAGE 2 --z> ", this.captchaState.answers.stage2?.length);
 
-        return `${this.captchaState.first} + ${this.captchaState.second} = ?`;
+        return `${this.captchaState.stages.stage2.data.first} + ${this.captchaState.stages.stage2.data.second} = ?`;
     }
 
     submitStage2() {
         const stage = this.captchaState.currentStage;
-        const mathAnswer = this.captchaState.answers.stage2;
+        const mathAnswer = this.captchaState.stages.stage2.response;
 
         console.log("Submitting Captcha for Stage ->", stage);
         // console.log("Answer ->", mathAnswer);
         if (!mathAnswer) {
-            alert("Please provide an answer before proceeding.");
+            this.openErrorPOpup("Please provide an answer before proceeding.");
+
             this.captchaState.currentStage = 2;
             this.captchaStateService.saveState(this.captchaState);
             return;
         }
-        const result = this.captchaState.first + this.captchaState.second;
-        console.log("RESULT -> ", result, mathAnswer);
+        // const result = this.captchaState.first + this.captchaState.second;
+        // console.log("RESULT -> ", result, mathAnswer);
 
-        if (Number(mathAnswer) !== result) {
-            alert("Try Agqin, not correct.");
-            this.captchaState.answers.stage2 = '';
+        if (this.captchaState.stages.stage2.expected !== mathAnswer) {
+            this.openErrorPOpup("Try Agqin, not correct.");
+            this.captchaState.stages.stage2.response = +'';
             this.captchaState.currentStage = 2;
             this.captchaStateService.saveState(this.captchaState);
             return;
         }
 
-        this.captchaStateService.setAnswers(stage, mathAnswer);
+        // this.captchaStateService.setAnswers(stage, mathAnswer);
+        this.captchaState.stages.stage2.response = mathAnswer;
         this.captchaState.currentStage = 3;
         this.captchaStateService.saveState(this.captchaState);
-
-        console.log(
-            "New STATE ->", this.captchaState);
     }
 
 
