@@ -20,7 +20,6 @@ import { CaptchaState } from "../models/captcha-state.interface";
 })
 
 export class ResultComponent implements OnInit {
-    
     performanceLabel = "";
     performanceMessage = "";
     performanceRating = 0;
@@ -42,7 +41,6 @@ export class ResultComponent implements OnInit {
     ngOnInit() {
         // this.captchaStateService.resetState();
         const s = this.captchaStateService.getState();
-        // const ms = s.timer || 0;
         this.formattedTine = s.crono.time;
         // console.log("TIME --> ", this.formattedTine, " AND ", this.timeToSeconds(s.crono.time));
 

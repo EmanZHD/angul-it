@@ -1,9 +1,11 @@
-// Include theming for Angular Material with `mat.theme()`.
-// This Sass mixin will define CSS variables that are used for styling Angular Material
-// components according to the Material 3 design spec.
-// Learn more about theming and how to use it for your application's
-// custom components at https://material.angular.dev/guide/theming
 @use '@angular/material' as mat;
+
+
+:host {
+  --gray-900: oklch(19.37% 0.006 300.98);
+  --gray-700: oklch(36.98% 0.014 302.71);
+  --gray-400: oklch(70.9% 0.015 304.04);
+}
 
 html {
   height: 100%;
@@ -16,29 +18,67 @@ html {
 }
 
 body {
-  // Default the application to a light color theme. This can be changed to
-  // `dark` to enable the dark color theme, or to `light dark` to defer to the
-  // user's system settings.
   color-scheme: light;
-
-  // Set a default background, font and text colors for the application using
-  // Angular Material's system-level CSS variables. Learn more about these
-  // variables at https://material.angular.dev/guide/system-variables
   background-color: var(--mat-sys-surface);
   color: var(--mat-sys-on-surface);
   font: var(--mat-sys-body-medium);
-
-  // Reset the user agent margin.
   margin: 0;
   height: 100%;
+  font-family: 'Space Mono', monospace;
 }
-
-/* You can add global styles to this file, and also import other style files */
-
 
 .captcha-dialog .mat-mdc-dialog-surface {
   background-color: #2b2b2b;
   border-radius: 12px;
   border: 1px solid #555;
   color: #fff;
+}
+
+
+
+.dialog-title {
+  font-size: 1.3rem;
+  color: #ffffff;
+}
+
+.dialog-content {
+  font-size: 1rem;
+  color: #f0f0f0;
+}
+
+
+
+
+.dialog-title {
+  font-size: 1.3rem;
+  color: #ffffff;
+}
+
+.dialog-content {
+  font-size: 1rem;
+  color: #f0f0f0;
+}
+
+.dialog-button {
+  background-color: #e87500 !important;
+  color: white !important;
+  border-radius: 20px !important;
+  font-size: 1rem !important;
+  padding: 0 1.5rem !important;
+}
+
+button {
+  font-family: 'Space Mono', monospace;
+  background: var(--bright-blue);
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  background: color-mix(in srgb, var(--bright-blue) 15%, transparent);
+  color: var(--bright-blue);
+  gap: 0.5rem;
 }

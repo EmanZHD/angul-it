@@ -10,10 +10,10 @@ import { CaptchaStateService } from './core/service/captcha-state.service';
   templateUrl: './app.html',
 })
 
-export class App implements OnInit {
-  constructor(private router: Router, private captchaStateService: CaptchaStateService) {}
+export class App {
+  constructor(private router: Router, private captchaStateService: CaptchaStateService) { }
 
-  ngOnInit(): void {
-    this.captchaStateService.resetState();
-  }
+  // ngOnInit(): void {
+  //   // this.captchaStateService.resetState();
+  // }
 }

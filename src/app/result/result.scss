@@ -85,17 +85,19 @@
     justify-content: center;
     flex-wrap: wrap;
     margin-bottom: 1.5rem;
+
+
 }
 
 .actions button {
-    border-radius: 999px;
-    padding: 0 20px;
-    height: 44px;
+    /* border-radius: 999px; */
+    /* padding: 0 20px; */
+    /* height: 44px; */
     font-weight: 600;
     letter-spacing: 0.3px;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 0px;
 }
 
 .actions mat-icon {
@@ -111,7 +113,6 @@
     margin: 0;
 }
 
-/* Animations */
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -134,7 +135,6 @@
     }
 }
 
-/* Responsive */
 @media (max-width: 480px) {
     .result-card {
         padding: 2rem 1.25rem;

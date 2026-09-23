@@ -17,7 +17,7 @@ export interface CaptchaState {
                 first: number,
                 second: number
             },
-            response: number,
+            response: number | null ,
             resolved: boolean
         },
         satge3: {
