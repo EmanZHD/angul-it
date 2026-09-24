@@ -11,6 +11,9 @@ import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatCardModule } from "@angular/material/card";
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from "@angular/material/icon";
+import { CaptchaStorageSErvice } from "../core/service/captcha-storage.service";
+import { CaptchaGeneratorService } from "../core/service/captcha-generator.service";
+import { CaptchaTimerService } from "../core/service/captcha-timer.service";
 @Component({
     selector: "app-captcha",
     templateUrl: "./captcha.html",
@@ -35,27 +38,27 @@ export class CaptchaComponent implements OnInit {
     captchaType: string;
     index = 0;
     verificationText: string = '';
-    // public selected = false;
     formattedTime: string = '00:00';
     private clockInterval: any;
     progressPercent: number = 40;
 
     constructor(private captchaStateService: CaptchaStateService,
+        private captchaStotage: CaptchaStorageSErvice,
+        private captchaGeneraor: CaptchaGeneratorService,
+        private captchaTimer: CaptchaTimerService,
         private router: Router,
         private cdr: ChangeDetectorRef) {
-        // this.captchaState = this.captchaStateService.getState();
 
-        this.captchaImages = this.captchaStateService.getImages();
+        this.captchaImages = this.captchaStotage.getImages();
         this.captchaType = this.captchaStateService.getCaptchType();
         this.formattedTime = this.captchaState.crono.time;
-    }
-    
-    ngOnInit(): void {
-        this.verificationText = this.captchaStateService.generateCaptchaText();
         this.mathProblem =
-            this.captchaStateService.generateMathNumbers();
+            this.captchaGeneraor.generateMathNumbers(this.captchaState);
+    }
 
-        this.captchaStateService.startCrono();
+    ngOnInit(): void {
+        this.verificationText = this.captchaGeneraor.generateCaptchaText(this.captchaState);
+        this.captchaTimer.startCrono(this.captchaState);
 
         this.clockInterval = setInterval(() => {
             this.formattedTime = this.captchaState.crono.time;
@@ -68,28 +71,25 @@ export class CaptchaComponent implements OnInit {
         console.log("RESULT OF 1 CHALLENGE > ", result);
 
         if (result !== null) {
-            this.captchaStateService.openErrorPOpup(result);
+            this.captchaGeneraor.openErrorPOpup(result);
             return;
         }
-        // this.captchaState = this.captchaStateService.getState();
     }
 
 
     submitStage2() {
         const result: string | null = this.captchaStateService.handleMathCaptcha();
         if (result !== null) {
-            this.captchaStateService.openErrorPOpup(result);
+            this.captchaGeneraor.openErrorPOpup(result);
             return;
         }
-        // this.verificationText =
-        //     this.captchaState.stages.satge3.expected;
     }
 
 
     submitStage3() {
         const result: string | null = this.captchaStateService.handleTextCaptcha();
         if (result !== null) {
-            this.captchaStateService.openErrorPOpup(result);
+            this.captchaGeneraor.openErrorPOpup(result);
             return;
         }
     }
@@ -129,18 +129,18 @@ export class CaptchaComponent implements OnInit {
 
         if (s.currentStage === 1 && s.stages.stage1.resolved) {
             s.currentStage = 2;
-            this.captchaStateService.saveState();
+            this.captchaStotage.saveState(s);
             return;
         }
         if (s.currentStage === 2 && s.stages.stage2.resolved) {
             s.currentStage = 3;
-            this.captchaStateService.saveState();
+            this.captchaStotage.saveState(s);
             return;
         }
 
         if (s.currentStage === 3 && s.stages.satge3.resolved) {
             s.completed = true;
-            this.captchaStateService.saveState();
+            this.captchaStotage.saveState(s);
         }
     }
 

@@ -1,52 +1,71 @@
 # CAPTCHA-izahid
 
 A modern, interactive CAPTCHA application built with Angular.
-The project challenges users through a sequence of verification tasks designed to determine whether they are human.
+
+The application guides users through a sequence of verification challenges while tracking their progress and completion time.
+
+## Contents
+
+* [Overview](#overview)
+* [Features](#features)
+
+  * [CAPTCHA Challenges](#captcha-challenges)
+  * [Timer & Performance](#timer--performance)
+  * [State Persistence](#state-persistence)
+  * [Navigation](#navigation)
+  * [User Interface](#user-interface)
+* [Technologies](#technologies)
+* [Project Structure](#-project-structure)
+* [Application Flow](#application-flow)
+* [State Management](#state-management)
+* [Performance Result](#performance-result)
+* [Getting Started](#getting-started)
+* [Testing](#testing)
+* [Build](#build)
+* [Responsive Design](#responsive-design)
+* [Author](#author)
 
 ## Overview
 
-CAPTCHA-izahid is a frontend CAPTCHA challenge developed with Angular.
+CAPTCHA-izahid is a frontend CAPTCHA project developed with Angular to practice:
 
-The application guides the user through different verification challenges while maintaining the current progress and measuring the time taken to complete the CAPTCHA.
-
-The project focuses on:
-
-* Angular fundamentals
+* Angular standalone components
 * Component-based architecture
 * Services and state management
-* Routing
-* Form handling and user input validation
+* Routing and navigation
+* Form handling and validation
 * Local storage persistence
 * Dynamic UI updates
 * Angular Material
 * Responsive design
-* Unit testing
+* Unit testing with Vitest
 
 ## Features
 
 ### CAPTCHA Challenges
 
-The application includes multiple challenge types:
+The application includes three verification stages:
 
-* 🖼️ **Image verification** — select the correct images according to the requested category.
-* ➕ **Math verification** — solve a dynamically generated mathematical problem.
-* 🔤 **Text verification** — enter the generated verification text.
+* 🖼️ **Image CAPTCHA** — select the correct images according to the requested category.
+* ➕ **Math CAPTCHA** — solve a dynamically generated mathematical operation.
+* 🔤 **Text CAPTCHA** — enter the generated 8-character mixed-case verification text.
 
-### Performance Tracking
+### Timer & Performance
 
-The application includes a built-in timer that starts when the CAPTCHA begins and measures the completion time.
+A timer starts when the CAPTCHA begins and tracks the total completion time.
 
-After successfully completing the CAPTCHA, the user receives a performance result based on their completion time.
+After completing all challenges, the result page displays the user's completion time and performance category.
 
 ### State Persistence
 
-The CAPTCHA state is stored in the browser's `localStorage`.
+The CAPTCHA state is persisted in the browser using `localStorage`.
 
-This allows the application to preserve information such as:
+The application can preserve:
 
 * Current challenge
+* Challenge data
 * Selected images
-* Challenge answers
+* User responses
 * Completion state
 * Timer state
 
@@ -54,73 +73,63 @@ This allows the application to preserve information such as:
 
 Users can:
 
+* Start a CAPTCHA
+* Complete each challenge in sequence
 * Return to the home page
-* Move between CAPTCHA challenges
 * Retry the CAPTCHA
-* View their final result
+* View the final result
 
 ### User Interface
 
-The interface is built with:
+The interface uses:
 
 * Angular Material
 * SCSS
+* Material Icons
 * Responsive layouts
-* Material icons
 * Custom animations and visual elements
 
 ## Technologies
 
-| Technology       | Usage                                  |
-| ---------------- | -------------------------------------- |
-| Angular          | Frontend framework                     |
-| TypeScript       | Application logic                      |
-| Angular Material | UI components                          |
-| SCSS             | Styling                                |
-| HTML             | Application structure                  |
-| Vitest           | Unit testing                           |
-| LocalStorage     | Client-side state persistence          |
-| Make             | Project setup and development commands |
+| Technology       | Usage                          |
+| ---------------- | ------------------------------ |
+| Angular          | Frontend framework             |
+| TypeScript       | Application logic              |
+| Angular Material | UI components                  |
+| SCSS             | Styling                        |
+| HTML             | Application structure          |
+| Vitest           | Unit testing                   |
+| LocalStorage     | Client-side state persistence  |
+| Make             | Setup and development commands |
 
 ## 📁 Project Structure
 
 ```text
-src/
-├── app/
-│   ├── captcha/
-│   │   ├── captcha.ts
-│   │   ├── captcha.html
-│   │   ├── captcha.scss
-│   │   └── captcha.spec.ts
-│   │
-│   ├── core/
-│   │   └── service/
-│   │       ├── captcha-state.service.ts
-│   │       └── captcha-state.service.spec.ts
-│   │
-│   ├── home/
-│   │   ├── home.ts
-│   │   ├── home.html
-│   │   ├── home.scss
-│   │   └── home.spec.ts
-│   │
-│   ├── popup/
-│   │   ├── popup.ts
-│   │   ├── popup.html
-│   │   ├── popup.scss
-│   │   └── popup.spec.ts
-│   │
-│   ├── result/
-│   │   ├── result.ts
-│   │   ├── result.html
-│   │   ├── result.scss
-│   │   └── result.spec.ts
-│   │
-│   └── models/
-│       └── captcha-state.interface.ts
+angul-it/
+├── src/
+│   ├── app/
+│   │   ├── captcha/              # CAPTCHA challenge
+│   │   ├── core/
+│   │   │   ├── service/          # Application services
+│   │   │   └── guards/           # Route protection
+│   │   ├── models/               # Application interfaces
+│   │   ├── popup/                # CAPTCHA dialogs
+│   │   ├── home/                 # Home page
+│   │   ├── result/               # Result page
+│   │   └── app.routes.ts         # Application routing
+│   ├── main.ts
+│   └── styles.scss
 │
-├── assets/
-└── ...
+├── public/
+│   ├── images/
+│   │   └── captcha/              # CAPTCHA images
+│   ├── captchaLogo.png
+│   └── sadBot.gif
+│
+├── Makefile
+├── angular.json
+├── package.json
+└── README.md
 ```
 
 ## Application Flow
@@ -150,58 +159,51 @@ Result
 
 ## State Management
 
-The `CaptchaStateService` is responsible for managing the CAPTCHA state.
+The `CaptchaStateService` manages the application's CAPTCHA state.
 
-It handles:
+It works together with dedicated services for:
 
-* Current challenge
-* Challenge data
-* User responses
-* Image selections
-* CAPTCHA completion
-* Timer
-* State persistence
-* Challenge validation
-* Error popup handling
+* CAPTCHA generation
+* State management
+* Local storage
+* Cryptographic operations
+* Timer management
+* Route protection
 
 The state is persisted using browser `localStorage`.
 
 ## Performance Result
 
-After completing the CAPTCHA, the application calculates the total completion time and displays a performance category.
+The result page calculates the total CAPTCHA completion time and displays a performance category.
 
 | Completion Time | Result         |
 | --------------- | -------------- |
-| ≤ 10 seconds    | Lightning Fast |
-| 11–25 seconds   | Normal         |
-| > 25 seconds    | Very Slow      |
+| ≤ 15 seconds    | Lightning Fast |
+| 16–30 seconds   | Fast           |
+| > 30 seconds    | Slow           |
 
-The result page also displays a corresponding star rating and message.
+The result page also displays a corresponding rating and message.
 
 ## Getting Started
 
-The project includes a `Makefile` to simplify the setup and development workflow.
+The project includes a `Makefile` to simplify the development workflow.
 
-### 1. Setup
-
-Clone the repository and enter the project directory:
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/EmanZHD/angul-it.git
 cd angul-it
 ```
 
-Run:
+### 2. Setup
 
 ```bash
 make setup
 ```
 
-This command installs the project dependencies and prepares the application.
+This installs the required dependencies.
 
-### 2. Run the Application
-
-Start the development server with:
+### 3. Run
 
 ```bash
 make run
@@ -213,9 +215,7 @@ The application will be available at:
 http://localhost:4200
 ```
 
-### 3. Run the Tests
-
-Execute the unit test suite with:
+### 4. Run Tests
 
 ```bash
 make tests
@@ -225,9 +225,7 @@ The project uses **Vitest** for unit testing.
 
 ## Testing
 
-The project includes unit tests for the main components and services.
-
-Tests cover important behaviors such as:
+Unit tests cover the main components and services, including:
 
 * Component creation
 * UI rendering
@@ -235,12 +233,12 @@ Tests cover important behaviors such as:
 * CAPTCHA validation
 * State management
 * Navigation
-* Timer-related behavior
-* Error messages
+* Timer behavior
+* Error handling
 * Result calculation
 * Local storage behavior
 
-Run all tests with:
+Run the complete test suite with:
 
 ```bash
 make tests
@@ -248,58 +246,31 @@ make tests
 
 ## Build
 
-To create a production build:
+Create a production build with:
 
 ```bash
 ng build
 ```
 
-The compiled application will be generated in the `dist/` directory.
+The compiled application is generated in the `dist/` directory.
 
 ## Responsive Design
 
-The application is designed to work across different screen sizes, including:
+The application is designed for:
 
 * Desktop
 * Laptop
 * Tablet
 * Mobile
 
-The layout adapts to smaller screens while keeping the CAPTCHA interaction accessible and usable.
+The interface adapts to different screen sizes while keeping the CAPTCHA interaction accessible and usable.
 
-## Security Note
+## Developer
 
-This project is a **frontend CAPTCHA demonstration** intended for learning and educational purposes.
-
-Because the CAPTCHA logic runs in the browser, it should not be considered a production-grade security mechanism. A real-world CAPTCHA system should perform validation on a trusted backend and use additional anti-automation protections.
-
-## Learning Objectives
-
-This project was developed to practice and demonstrate:
-
-* Angular standalone components
-* Angular routing
-* Dependency injection
-* Services
-* State management
-* Forms and validation
-* Angular Material
-* Local storage
-* Timers
-* Dynamic templates
-* Component communication
-* Unit testing with Vitest
-* Responsive SCSS
-* Makefile-based development workflow
-
-## Author
-
-**Imane Zahid**
-
-Junior Full Stack Developer
+**IZAHID**
 
 GitHub: [@EmanZHD](https://github.com/EmanZHD)
 
 ---
 
-© 2026 CAPTCHA-izahid — All rights reserved.
+© 2026 CAPTCHA-izahid

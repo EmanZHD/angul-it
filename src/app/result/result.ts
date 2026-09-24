@@ -6,6 +6,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { Router } from "@angular/router";
 import { CaptchaState } from "../models/captcha-state.interface";
+import { CaptchaStorageSErvice } from "../core/service/captcha-storage.service";
 
 @Component({
     selector: "app-result",
@@ -24,12 +25,14 @@ export class ResultComponent implements OnInit {
     performanceMessage = "";
     performanceRating = 0;
     performanceColor = "";
-    captchaState: CaptchaState;
+    // captchaState: CaptchaState;
     formattedTine: string = '';
-
-    constructor(private captchaStateService: CaptchaStateService, private router: Router) {
-        this.captchaState = this.captchaStateService.getState();
-
+    get captchaState(): CaptchaState {
+        return this.captchaStateService.getState();
+    }
+    constructor(private captchaStateService: CaptchaStateService,
+        private router: Router) {
+        // this.captchaState = this.captchaStateService.getState();
     }
 
     private timeToSeconds(time: string): number {
@@ -39,18 +42,15 @@ export class ResultComponent implements OnInit {
 
 
     ngOnInit() {
-        // this.captchaStateService.resetState();
-        const s = this.captchaStateService.getState();
-        this.formattedTine = s.crono.time;
+        this.formattedTine = this.captchaState.crono.time;
         // console.log("TIME --> ", this.formattedTine, " AND ", this.timeToSeconds(s.crono.time));
 
-        this.applyPerformance(Math.floor(this.timeToSeconds(s.crono.time)));
+        this.applyPerformance(Math.floor(this.timeToSeconds(this.captchaState.crono.time)));
 
         this.captchaStateService.resetState();
     }
 
     goHome() {
-        // this.captchaState.completed = false;
         this.captchaStateService.resetState();
         this.router.navigate(['/']);
     }

@@ -1,6 +1,7 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { signal } from "@angular/core";
 import { RouterLink } from "@angular/router";
+import { CaptchaStateService } from "../core/service/captcha-state.service";
 
 @Component({
     imports: [RouterLink],
@@ -9,6 +10,10 @@ import { RouterLink } from "@angular/router";
     styleUrl: "./home.scss"
 })
 
-export class HomeComponent {
+export class HomeComponent implements OnInit {
     protected readonly title = signal('Human!');
+    constructor(private stateService: CaptchaStateService) { }
+    ngOnInit(): void {
+        this.stateService.resetState();
+    }
 }
